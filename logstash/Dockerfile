@@ -17,8 +17,6 @@ RUN apt-get -y install oracle-java8-installer
 RUN wget -O - https://packages.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 RUN echo "deb http://packages.elastic.co/logstash/2.1/debian stable main" | sudo tee -a /etc/apt/sources.list
 RUN apt-get update && apt-get -y install logstash
-ADD logstash.conf /etc/
-WORKDIR /opt/logstash
 
 RUN touch /opt/logstash/sincedb-access
 RUN chown logstash:logstash /opt/logstash/sincedb-access
@@ -26,6 +24,9 @@ RUN chown logstash:logstash /opt/logstash/sincedb-access
 # 缺失一个库，否则会报错
 # NotImplementedError: stat.st_dev unsupported or native support failed to load dev_major at org/jruby/RubyFileStat.java:188
 RUN ln -s /lib/x86_64-linux-gnu/libcrypt.so.1 /usr/lib/x86_64-linux-gnu/libcrypt.so
+
+ADD logstash.conf /etc/
+WORKDIR /opt/logstash
 
 ENTRYPOINT [ "bin/logstash" ]
 CMD ["--config=/etc/logstash.conf"]
