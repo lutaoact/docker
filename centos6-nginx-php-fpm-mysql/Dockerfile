@@ -34,3 +34,50 @@ RUN chkconfig mysqld on
 RUN usermod -a -G nginx nginx
 ADD demo.gupws.com.conf /etc/nginx/conf.d/
 ADD www.conf /etc/php-fpm.d/
+
+ADD libdatrie-0.2.4.tar.gz /root/
+WORKDIR /root
+
+RUN yum install -y gcc
+RUN cd libdatrie-0.2.4 && ./configure && make && make install
+
+ADD php-5.6.30.tar.gz /root/
+ADD sougu.tar.gz /root/php-5.6.30/ext/
+WORKDIR /root/php-5.6.30/ext/sougu/
+
+RUN phpize
+RUN ./configure --with-php-config=/usr/bin/php-config && make && make install
+RUN echo $'\n'extension=trie_filter.so >> /etc/php.ini
+
+ADD libHLSWknl.so /usr/lib64/
+RUN chmod +x /usr/lib64/libHLSWknl.so
+RUN ln -s /usr/lib64/libssl.so.1.0.1e /usr/lib64/libssl.so.6
+RUN ln -s /usr/lib64/libcrypto.so.1.0.1e /usr/lib64/libcrypto.so.6
+
+ADD libHLUuid.so /usr/lib/
+RUN chmod +x /usr/lib/libHLUuid.so
+
+RUN ldconfig
+
+WORKDIR /root/php-5.6.30/ext/
+RUN ./ext_skel --extname=hluuid
+
+WORKDIR /root/php-5.6.30/ext/hluuid
+RUN sed -i '16,18s/^dnl //' config.m4
+ADD hluuid.c /root/php-5.6.30/ext/hluuid/
+RUN phpize
+RUN ./configure --enable-hluuid=shared && make LDFLAGS=-lHLUuid && make install
+RUN echo $'\n'extension=hluuid.so >> /etc/php.ini
+RUN sed -i '889i date.timezone = PRC' /etc/php.ini
+VOLUME ["/var/www/htpoc/trunk"]
+
+ADD freetds-patched.tar.gz /root/
+WORKDIR /root/freetds-1.00.27
+RUN ./configure --prefix=/usr/local/freetds --with-tdsver=7.2 --enable-msdblib && make && make install
+
+WORKDIR /root/php-5.6.30/ext/pdo_dblib
+RUN phpize
+RUN ./configure --with-php-config=/usr/bin/php-config --with-pdo-dblib=/usr/local/freetds && make && make install
+RUN echo $'\n'extension=pdo_dblib.so >> /etc/php.ini
+
+RUN yum install -y php56w-odbc
