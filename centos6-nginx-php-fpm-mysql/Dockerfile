@@ -24,7 +24,6 @@ RUN rpm --import nginx_signing.key
 RUN yum -y update && yum install -y nginx
 RUN chkconfig --add nginx
 RUN chkconfig nginx on
-EXPOSE 80
 
 # 安装mysql
 RUN yum install -y mysql mysql-server mariadb-server
@@ -69,7 +68,6 @@ RUN phpize
 RUN ./configure --enable-hluuid=shared && make LDFLAGS=-lHLUuid && make install
 RUN echo $'\n'extension=hluuid.so >> /etc/php.ini
 RUN sed -i '889i date.timezone = PRC' /etc/php.ini
-VOLUME ["/var/www/htpoc/trunk"]
 
 ADD freetds-patched.tar.gz /root/
 WORKDIR /root/freetds-1.00.27
@@ -78,6 +76,23 @@ RUN ./configure --prefix=/usr/local/freetds --with-tdsver=7.2 --enable-msdblib &
 WORKDIR /root/php-5.6.30/ext/pdo_dblib
 RUN phpize
 RUN ./configure --with-php-config=/usr/bin/php-config --with-pdo-dblib=/usr/local/freetds && make && make install
-RUN echo $'\n'extension=pdo_dblib.so >> /etc/php.ini
+RUN echo 'extension=pdo_dblib.so' >> /etc/php.d/pdo_dblib.ini
 
 RUN yum install -y php56w-odbc
+RUN sed -i '/\[mysqld\]/a max_allowed_packet=800m' /etc/my.cnf
+RUN sed -i '/\[mysqld\]/a max_connections=20000' /etc/my.cnf
+
+ADD antiword-0.37-17.el6.x86_64.rpm /root/
+WORKDIR /root/
+RUN rpm -i antiword-0.37-17.el6.x86_64.rpm
+ADD trunk /var/www/htpoc/trunk/
+WORKDIR /var/www/htpoc/trunk/public
+
+EXPOSE 80
+#VOLUME ["/var/www/htpoc/trunk"]
+
+ADD ht_poc.sql /root/
+
+ADD start /var/www/htpoc/trunk/public/
+
+CMD ["./start"]
