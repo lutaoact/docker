@@ -78,21 +78,48 @@ RUN phpize
 RUN ./configure --with-php-config=/usr/bin/php-config --with-pdo-dblib=/usr/local/freetds && make && make install
 RUN echo 'extension=pdo_dblib.so' >> /etc/php.d/pdo_dblib.ini
 
-RUN yum install -y php56w-odbc
+RUN yum install -y php56w-odbc php56w-mysql
 RUN sed -i '/\[mysqld\]/a max_allowed_packet=800m' /etc/my.cnf
 RUN sed -i '/\[mysqld\]/a max_connections=20000' /etc/my.cnf
 
 ADD antiword-0.37-17.el6.x86_64.rpm /root/
 WORKDIR /root/
 RUN rpm -i antiword-0.37-17.el6.x86_64.rpm
-ADD trunk /var/www/htpoc/trunk/
-WORKDIR /var/www/htpoc/trunk/public
 
 EXPOSE 80
-#VOLUME ["/var/www/htpoc/trunk"]
+VOLUME ["/var/www/htpoc/trunk"]
 
 ADD ht_poc.sql /root/
 
-ADD start /var/www/htpoc/trunk/public/
+RUN sed -i '396s/128/4096/' /etc/php.ini
 
-CMD ["./start"]
+ADD oracle-instantclient11.2-*-11.2.0.4.0* /root/
+
+RUN yum -y install libaio
+
+RUN rpm -ivh oracle-instantclient11.2-basic-11.2.0.4.0-1.x86_64.rpm
+RUN rpm -ivh oracle-instantclient11.2-devel-11.2.0.4.0-1.x86_64.rpm
+
+RUN ln -s /usr/include/oracle/11.2/client64 /usr/include/oracle/11.2/client
+RUN ln -s /usr/lib/oracle/11.2/client64 /usr/lib/oracle/11.2/client
+
+ENV ORACLE_HOME /usr/lib/oracle/11.2/client64
+ENV LD_LIBRARY_PATH $ORACLE_HOME/lib
+
+WORKDIR /root
+ADD PDO_OCI-1.0.tar.gz /root/
+WORKDIR /root/PDO_OCI-1.0
+RUN phpize
+RUN ./configure --with-pdo-oci=instantclient,/usr,11.2 && make && make install
+
+ADD pdo_oci.ini /etc/php.d/
+
+ADD oci8-2.0.8.tgz /root/
+WORKDIR /root/oci8-2.0.8
+RUN phpize
+RUN ./configure --with-oci8=shared,instantclient,/usr/lib/oracle/11.2/client64/lib && make && make install
+ADD oci8.ini /etc/php.d/
+
+#ADD start /var/www/htpoc/trunk/public/
+
+#CMD ["./start"]
