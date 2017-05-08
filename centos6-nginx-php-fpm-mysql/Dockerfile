@@ -14,24 +14,17 @@ RUN rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
 
 RUN yum install -y php56w php56w-devel php56w-pdo php56w-opcache php56w-mbstring php56w-fpm
 RUN php-fpm -t
-RUN chkconfig --add php-fpm
-RUN chkconfig php-fpm on
 
 # 安装nginx
 ADD nginx.repo /etc/yum.repos.d/
 RUN wget http://nginx.org/keys/nginx_signing.key
 RUN rpm --import nginx_signing.key
 RUN yum -y update && yum install -y nginx
-RUN chkconfig --add nginx
-RUN chkconfig nginx on
 
 # 安装mysql
 RUN yum install -y mysql mysql-server mariadb-server
-RUN chkconfig --add mysqld
-RUN chkconfig mysqld on
 
 RUN usermod -a -G nginx nginx
-ADD demo.gupws.com.conf /etc/nginx/conf.d/
 ADD www.conf /etc/php-fpm.d/
 
 ADD libdatrie-0.2.4.tar.gz /root/
@@ -87,7 +80,6 @@ WORKDIR /root/
 RUN rpm -i antiword-0.37-17.el6.x86_64.rpm
 
 EXPOSE 80
-VOLUME ["/var/www/htpoc/trunk"]
 
 ADD ht_poc.sql /root/
 
@@ -106,6 +98,9 @@ RUN ln -s /usr/lib/oracle/11.2/client64 /usr/lib/oracle/11.2/client
 ENV ORACLE_HOME /usr/lib/oracle/11.2/client64
 ENV LD_LIBRARY_PATH $ORACLE_HOME/lib
 
+RUN sed -i '12i env[LD_LIBRARY_PATH] = /usr/lib/oracle/11.2/client64/lib' /etc/php-fpm.conf
+RUN sed -i '13i env[ORACLE_HOME] = /usr/lib/oracle/11.2/client64/lib' /etc/php-fpm.conf
+
 WORKDIR /root
 ADD PDO_OCI-1.0.tar.gz /root/
 WORKDIR /root/PDO_OCI-1.0
@@ -120,6 +115,10 @@ RUN phpize
 RUN ./configure --with-oci8=shared,instantclient,/usr/lib/oracle/11.2/client64/lib && make && make install
 ADD oci8.ini /etc/php.d/
 
-#ADD start /var/www/htpoc/trunk/public/
+ADD demo.gupws.com.conf /etc/nginx/conf.d/
+ADD trunk/ /var/www/htpoc/trunk/
 
-#CMD ["./start"]
+WORKDIR /var/www/htpoc/trunk/
+RUN chmod -R 777 ./ && chown -R nginx:nginx ./
+
+WORKDIR /var/www/htpoc/trunk/public/
