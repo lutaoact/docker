@@ -1,0 +1,86 @@
+syntax on
+set nocompatible
+let loaded_matchparen = 1
+set encoding=utf-8
+set number
+" set relativenumber
+set enc=utf-8
+set fencs=utf-8,gb2312,euc-jp,shift-jis
+set noswapfile
+set laststatus=2
+set tabstop=2
+set shiftwidth=2
+set ruler
+set showcmd
+set showmatch
+set cmdheight=3
+" set cursorline
+set nocursorline
+set wildmenu
+autocmd InsertLeave * se cul
+set incsearch
+set hlsearch
+set expandtab
+set smarttab
+set smartindent
+set showtabline=2
+set autoindent
+set cindent
+set clipboard=unnamed
+set statusline=\ [File]\ %F%m%r%h\ %w\ \ %h\ [%{&ff}]\ [%{&fenc}\ %{&bomb}]\ [%b\ %B]\ \%=[Line]\ %l,%c\ %=\ %P
+set whichwrap=b,s,<,>,[,],h,l "Allow move the cursor left/right to move to the previous/next line
+
+" 可视化显示tab和行尾的空格
+set list listchars=tab:>-,trail:_
+
+" set foldmethod=marker
+set suffixesadd=.js
+set keywordprg=:help
+set backspace=2
+hi Comment ctermfg=6
+
+" Mappings
+nmap <F2> :%!python -m json.tool<CR>
+nmap <F3> :!node %<CR>
+nmap <F4> :!go run %<CR>
+nmap <F5> :tabp<CR>
+nmap <F6> :tabn<CR>
+nmap <F7> :!./%<CR>
+nmap <F8> :!python %<CR>
+" map <F9> :!coffee %<CR>
+nmap <F10> :%s/<C-R>//<C-R>"/g<CR>
+
+" 实现文件跳转，默认从path指定的路径开始查找
+set path=~/go/src
+nmap gf <C-W>gf
+
+nnoremap * *N
+" visual模式下，用*搜索选中的文本，并高亮
+vnoremap * y:let @/=@"<CR>nN
+
+noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
+noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
+
+" 选中上次操作过的文本片段
+nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+
+" 使用<Tab>和<S-Tab>实现缩进，由于<TAB>键是ultisnips的默认触发键，所以会产生冲突
+" 这里用 > 和 < 来替代
+nnoremap > v>
+nnoremap < v<
+vnoremap > >gv
+vnoremap < <gv
+
+au BufRead,BufNewFile *.bashrc set filetype=sh
+autocmd BufRead,BufNewFile **/etc/nginx/** setfiletype conf
+au BufEnter /private/tmp/crontab.* setl backupcopy=yes
+autocmd BufRead,BufNewFile **eslintrc** setfiletype json
+au BufNewFile,BufRead,BufWrite *.markdown syntax match Comment /\%^---\_.\{-}---$/
+au BufRead,BufNewFile *nginx*.conf,*/nginx/conf.d/*,*/nginx.conf.d/* if &ft == '' | setfiletype nginx | endif
+
+autocmd BufWritePost */tmp/crontab.* w! /data/backup/crontab.conf
+
+" ********************* 以下为go语言相关配置 *********************
+
+" 不启用list模式，因为有fmt的存在，空白字符不需要可视化
+autocmd FileType go set nolist
