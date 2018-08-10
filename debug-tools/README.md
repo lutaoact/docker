@@ -2,8 +2,15 @@
 
 ## 使用方法
 
-```
+```bash
 make run c=[container name or id]
+```
+
+或者
+
+```bash
+docker run -it --rm --pid=container:[c] --net=container:[c] --cap-add all reg.qiniu.com/lutaoact/debug-tools bash
+# c表示容器名称或id
 ```
 
 ## 原理
