@@ -21,4 +21,5 @@ docker run -it --rm --pid=container:[c] --net=container:[c] --cap-add all reg.qi
 
 ## 相关链接
 
-[How-to Debug a Running Docker Container from a Separate Container](https://medium.com/@rothgar/how-to-debug-a-running-docker-container-from-a-separate-container-983f11740dc6)
+* [How-to Debug a Running Docker Container from a Separate Container](https://medium.com/@rothgar/how-to-debug-a-running-docker-container-from-a-separate-container-983f11740dc6)
+* [enter for debug](https://gist.github.com/justincormack/f2444fbdf210b05d4f7baabe6fcd219a)
