@@ -3,6 +3,7 @@
 ## 使用方法
 
 ```bash
+# 在项目目录中执行：
 make run c=[container name or id]
 ```
 
@@ -11,6 +12,19 @@ make run c=[container name or id]
 ```bash
 docker run -it --rm --pid=container:[c] --net=container:[c] --cap-add all reg.qiniu.com/lutaoact/debug-tools bash
 # c表示容器名称或id
+```
+
+或者将命令定义为函数，添加到~/.bashrc，简化使用方式：
+
+```
+function cdebug() {
+  if [ -z "$1" ]; then
+    return 1
+  fi
+  docker run -it --rm --pid=container:"$1" --net=container:"$1" --cap-add all reg.qiniu.com/lutaoact/debug-tools bash
+}
+
+cdebug [container name or id]
 ```
 
 ## 原理
