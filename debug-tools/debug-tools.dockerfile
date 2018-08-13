@@ -12,7 +12,7 @@ deb-src http://mirrors.163.com/ubuntu/ xenial-proposed main restricted universe 
 deb-src http://mirrors.163.com/ubuntu/ xenial-backports main restricted universe multiverse' > /etc/apt/sources.list
 
 RUN apt-get update \
-    && apt-get install -y telnet wget vim curl strace lsof net-tools dnsutils ca-certificates \
-    && apt-get clean
+&& apt-get install -y telnet wget vim curl strace lsof net-tools dnsutils ca-certificates tcpdump \
+&& apt-get clean
 
 ADD vimrc /root/.vimrc
