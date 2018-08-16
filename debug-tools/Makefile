@@ -5,5 +5,8 @@ all:
 	docker push reg.qiniu.com/lutaoact/debug-tools
 
 run:
-	test $(c)
-	docker run -it --rm --pid=container:$(c) --net=container:$(c) --cap-add all reg.qiniu.com/lutaoact/debug-tools bash
+	if [ -z "$(c)" ]; then \
+		docker run -it --rm -v /tmp:/tmp reg.qiniu.com/lutaoact/debug-tools bash; \
+	else \
+		docker run -it --rm -v /tmp:/tmp --pid=container:$(c) --net=container:$(c) --cap-add all reg.qiniu.com/lutaoact/debug-tools bash; \
+	fi
