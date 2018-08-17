@@ -10,7 +10,7 @@ make run c=[container name or id]
 或者
 
 ```bash
-docker run -it --rm --pid=container:[c] --net=container:[c] --cap-add all reg.qiniu.com/lutaoact/debug-tools bash
+docker run -it --rm --pid=container:[c] --net=container:[c] --cap-add all reg.qiniu.com/lutaoact/debug-tools
 # c表示容器名称或id
 ```
 
@@ -19,9 +19,9 @@ docker run -it --rm --pid=container:[c] --net=container:[c] --cap-add all reg.qi
 ```
 function cdebug() {
   if [ -z "$1" ]; then
-    docker run -it --rm reg.qiniu.com/lutaoact/debug-tools bash
+    docker run -it --rm reg.qiniu.com/lutaoact/debug-tools
   else
-    docker run -it --rm --pid=container:"$1" --net=container:"$1" --cap-add all reg.qiniu.com/lutaoact/debug-tools bash
+    docker run -it --rm --pid=container:"$1" --net=container:"$1" --cap-add all reg.qiniu.com/lutaoact/debug-tools
   fi
 }
 

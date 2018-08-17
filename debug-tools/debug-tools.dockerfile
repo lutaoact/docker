@@ -24,6 +24,8 @@ RUN apt-get update && apt-get install -y mongodb-org-shell mongodb-org-tools
 ADD redis-cli /usr/local/bin/redis-cli
 
 # 安装其它调试工具
-RUN apt-get update && apt-get install -y telnet wget vim curl strace lsof net-tools dnsutils ca-certificates tcpdump
+RUN apt-get update && apt-get install -y iputils-ping telnet wget vim curl strace lsof net-tools dnsutils ca-certificates tcpdump nethogs
 
 ADD vimrc /root/.vimrc
+
+CMD ["bash"]

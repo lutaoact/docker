@@ -6,7 +6,7 @@ all:
 
 run:
 	if [ -z "$(c)" ]; then \
-		docker run -it --rm -v /tmp:/tmp reg.qiniu.com/lutaoact/debug-tools bash; \
+		docker run -it --rm -v /tmp:/tmp reg.qiniu.com/lutaoact/debug-tools; \
 	else \
-		docker run -it --rm -v /tmp:/tmp --pid=container:$(c) --net=container:$(c) --cap-add all reg.qiniu.com/lutaoact/debug-tools bash; \
+		docker run -it --rm -v /tmp:/tmp --pid=container:$(c) --net=container:$(c) --cap-add all reg.qiniu.com/lutaoact/debug-tools; \
 	fi
