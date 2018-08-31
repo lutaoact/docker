@@ -19,9 +19,9 @@ docker run -it --rm --pid=container:[c] --net=container:[c] --cap-add all reg.qi
 ```
 function cdebug() {
   if [ -z "$1" ]; then
-    docker run -it --rm reg.qiniu.com/lutaoact/debug-tools
+    docker run -it --rm -v /tmp:/tmp reg.qiniu.com/lutaoact/debug-tools
   else
-    docker run -it --rm --pid=container:"$1" --net=container:"$1" --cap-add all reg.qiniu.com/lutaoact/debug-tools
+    docker run -it --rm -v /tmp:/tmp --pid=container:"$1" --net=container:"$1" --cap-add all reg.qiniu.com/lutaoact/debug-tools
   fi
 }
 
