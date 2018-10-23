@@ -3,7 +3,6 @@ set nocompatible
 let loaded_matchparen = 1
 set encoding=utf-8
 set number
-" set relativenumber
 set enc=utf-8
 set fencs=utf-8,gb2312,euc-jp,shift-jis
 set noswapfile
@@ -33,9 +32,6 @@ set whichwrap=b,s,<,>,[,],h,l "Allow move the cursor left/right to move to the p
 " 可视化显示tab和行尾的空格
 set list listchars=tab:>-,trail:_
 
-" set foldmethod=marker
-set suffixesadd=.js
-set keywordprg=:help
 set backspace=2
 hi Comment ctermfg=6
 
@@ -77,10 +73,3 @@ au BufEnter /private/tmp/crontab.* setl backupcopy=yes
 autocmd BufRead,BufNewFile **eslintrc** setfiletype json
 au BufNewFile,BufRead,BufWrite *.markdown syntax match Comment /\%^---\_.\{-}---$/
 au BufRead,BufNewFile *nginx*.conf,*/nginx/conf.d/*,*/nginx.conf.d/* if &ft == '' | setfiletype nginx | endif
-
-autocmd BufWritePost */tmp/crontab.* w! /data/backup/crontab.conf
-
-" ********************* 以下为go语言相关配置 *********************
-
-" 不启用list模式，因为有fmt的存在，空白字符不需要可视化
-autocmd FileType go set nolist
