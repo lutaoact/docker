@@ -27,22 +27,24 @@ COPY localtime /etc/localtime
 COPY timezone /etc/timezone
 
 # 安装其它调试工具，每层单独安装，方便复用构建缓存
-RUN apt-get update && apt-get install -y ca-certificates
-RUN apt-get update && apt-get install -y iputils-ping
-RUN apt-get update && apt-get install -y telnet
-RUN apt-get update && apt-get install -y wget
-RUN apt-get update && apt-get install -y vim
-RUN apt-get update && apt-get install -y curl
-RUN apt-get update && apt-get install -y strace
-RUN apt-get update && apt-get install -y lsof
-RUN apt-get update && apt-get install -y net-tools
-RUN apt-get update && apt-get install -y dnsutils
-RUN apt-get update && apt-get install -y tcpdump
-RUN apt-get update && apt-get install -y nethogs
-RUN apt-get update && apt-get install -y mtr
-RUN apt-get update && apt-get install -y traceroute
-RUN apt-get update && apt-get install -y netcat
-RUN apt-get update && apt-get install -y cron
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    iputils-ping \
+    telnet \
+    wget \
+    vim \
+    curl \
+    strace \
+    lsof \
+    net-tools \
+    dnsutils \
+    tcpdump \
+    nethogs \
+    mtr \
+    traceroute \
+    netcat \
+    cron \
+  && rm -rf /var/lib/apt/lists/*
 
 ADD vimrc /root/.vimrc
 
