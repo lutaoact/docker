@@ -1,0 +1,11 @@
+version: '3.0'
+
+services:
+  nginx-use:
+    container_name: nginx-use
+    image: nginx-use
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    ports:
+      - "8080:80"
