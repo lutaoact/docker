@@ -12,7 +12,7 @@ deb-src http://mirrors.163.com/ubuntu/ bionic-proposed main restricted universe 
 deb-src http://mirrors.163.com/ubuntu/ bionic-backports main restricted universe multiverse' > /etc/apt/sources.list
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        openssl vim curl netcat ca-certificates locales && \
+        openssl vim curl netcat ca-certificates locales software-properties-common && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
